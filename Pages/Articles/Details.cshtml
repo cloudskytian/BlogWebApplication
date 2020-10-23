@@ -1,0 +1,51 @@
+﻿@page "{ArticleId}"
+@model BlogWebApplication.Pages.Articles.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>@Html.DisplayFor(model => model.Article.Title)</h1>
+
+<div>
+    <div>
+        <a asp-page="/User" asp-route-userName="@Model.UserIdDic.FirstOrDefault().Value">@Html.DisplayFor(model => model.UserIdDic.FirstOrDefault().Value)</a> 发表于 @Html.DisplayFor(model => model.Article.ReleaseDate)
+    </div>
+    @{ 
+        string author = Model.UserIdDic.FirstOrDefault().Value;
+    }
+    @if (Model.IsAuthor)
+    {
+        <div>
+            <a asp-page="./Edit" asp-route-id="@Model.Article.Id">编辑</a>
+            <a asp-page="./Delete" asp-route-id="@Model.Article.Id">删除</a>
+        </div>
+    }
+    <div class="border">
+        @Html.DisplayFor(model => model.Article.Content)
+    </div>
+    <div>
+        @if (Model.Comments != null)
+        {
+            <label>评论：</label>
+            <br />
+            foreach (BlogWebApplication.Models.Comment comment in Model.Comments)
+            {
+                <div>
+                    <a>#@comment.Floor 楼</a>
+                    @{
+                        var fromUser = from u in Model.UserIdDic where u.Key == comment.FromUser select u;
+                        <a asp-page="/User" asp-route-id="@fromUser.FirstOrDefault().Value">@fromUser.FirstOrDefault().Value</a>
+                        <a>评论</a>
+                        var toUser = from u in Model.UserIdDic where u.Key == comment.ToUser select u;
+                        <a asp-page="/User" asp-route-id="@toUser.FirstOrDefault().Value">@toUser.FirstOrDefault().Value</a>
+                        <a>说：</a>
+                        <a class="float-right" asp-page="/Comments/Create" asp-route-articleId="@Model.Article.Id" asp-route-fromUser="@User.Identity.Name" asp-route-toUser="@fromUser.FirstOrDefault().Value">回复</a>
+                        <div class="border">@comment.Content</div>
+                    }
+                </div>
+            }
+        }
+    </div>
+    <a asp-page="/Comments/Create" asp-route-articleId="@Model.Article.Id" asp-route-fromUser="@User.Identity.Name" asp-route-toUser="@Model.UserIdDic.FirstOrDefault().Value">发表评论</a>
+</div>

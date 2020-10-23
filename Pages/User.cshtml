@@ -1,0 +1,67 @@
+﻿@page "{UserName}"
+@model BlogWebApplication.Pages.UserModel
+
+@{
+    ViewData["Title"] = ViewData["UserName"] + "的主页";
+}
+
+<style>
+    .pager {
+        padding-left: 0;
+        margin: 20px 0;
+        text-align: center;
+        list-style: none
+    }
+
+        .pager li {
+            display: inline
+        }
+
+            .pager li > a, .pager li > span {
+                display: inline-block;
+                padding: 5px 14px;
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-radius: 15px
+            }
+
+                .pager li > a:focus, .pager li > a:hover {
+                    text-decoration: none;
+                    background-color: #eee
+                }
+
+        .pager .next > a, .pager .next > span {
+            float: right
+        }
+
+        .pager .previous > a, .pager .previous > span {
+            float: left
+        }
+
+        .pager .disabled > a, .pager .disabled > a:focus, .pager .disabled > a:hover, .pager .disabled > span {
+            color: #777;
+            cursor: not-allowed;
+            background-color: #fff
+        }
+</style>
+
+<link rel="stylesheet" href="bootstrap.min.css">
+
+<h1>@ViewData["UserName"] 的主页</h1>
+
+<ul>
+    @foreach (var item in Model.Articles)
+    {
+        <li class="list-group-item">
+            <a class="card-title" asp-page="/Articles/Details" asp-route-articleId="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a>
+            <div class="text-body">@Html.DisplayFor(modelItem => item.Content)</div>
+            <div>用户 <a asp-page="/User" asp-route-userName="@ViewData["UserName"]">@ViewData["UserName"]</a> 于 @Html.DisplayFor(modelItem => item.ReleaseDate) 发表</div>
+        </li>
+    }
+</ul>
+@{
+    var prevDisabled = !Model.Articles.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Articles.HasNextPage ? "disabled" : "";
+}
+<a asp-page="./User" asp-route-pageIndex="@(Model.Articles.PageIndex - 1)" class="btn btn-primary @prevDisabled">上一页</a>
+<a asp-page="./User" asp-route-pageIndex="@(Model.Articles.PageIndex + 1)" class="btn btn-primary @nextDisabled">下一页</a>

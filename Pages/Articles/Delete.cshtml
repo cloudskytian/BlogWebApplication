@@ -1,0 +1,37 @@
+﻿@page
+@model BlogWebApplication.Pages.Articles.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>删除</h1>
+
+<h3>你确定要删除此文章吗？</h3>
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            标题
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Article.Title)
+        </dd>
+        <dt class="col-sm-2">
+            日期
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Article.ReleaseDate)
+        </dd>
+        <dt class="col-sm-2">
+            内容
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Article.Content)
+        </dd>
+    </dl>
+    
+    <form method="post">
+        <input type="hidden" asp-for="Article.Id" />
+        <input type="submit" value="删除" class="btn btn-danger" />
+    </form>
+</div>
